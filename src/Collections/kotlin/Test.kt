@@ -22,6 +22,26 @@ object Test {
         initRichArticles()
         richArticles.sortWith(compareBy({ it.isPinned }, { -1 * it.createTime.time }))
         richArticles.forEach(::println)
+
+        basicOperation()
+    }
+
+    private fun basicOperation() {
+        // 定义并初始化列表
+        val list = listOf(1, 2, 3, 4, 5, 6)
+        // 过滤
+        println(list.filter { it % 2 == 0 })
+        // >>> [2, 4, 6]
+        println(list.map { it * it })
+        // [1, 4, 9, 16, 25, 36]
+        val words = listOf(listOf("kotlin"), listOf("is", "best"))
+        println(words.flatten())
+        // [kotlin, is, best]
+        println(words.flatMap { it.map(String::toUpperCase) })
+        // [KOTLIN, IS, BEST]
+
+        // 自定义操作符
+        println(list.collect({ it * it }, { it % 2 == 0 }))
     }
 
     private fun initArticles() {
@@ -64,4 +84,16 @@ object Test {
     private fun groupByAuthorKotlin(articles: List<Article>): Map<String, List<Article>> {
         return articles.groupBy { it.author }
     }
+}
+
+private fun <T, E> Iterable<T>.magicConvert(function: (T) -> E): MutableList<E> {
+    val result: MutableList<E> = mutableListOf()
+    for (element in this) result.add(function(element))
+    return result
+}
+
+private fun <T, E> Iterable<T>.collect(function: (T) -> E, predicate: (T) -> Boolean): MutableList<E> {
+    val result: MutableList<E> = mutableListOf()
+    for (element in this) if (predicate(element)) result.add(function(element))
+    return result
 }
